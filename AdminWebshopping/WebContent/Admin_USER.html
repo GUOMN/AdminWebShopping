@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>商城用户管理</title>
+	
+		<link rel="stylesheet" type="text/css" href="jquery-easyui-1.3.3/themes/default/easyui.css">   <!--引入CSS样式-->
+		<link rel="stylesheet" type="text/css" href="jquery-easyui-1.3.3/themes/icon.css">   <!--Icon引入-->
+			<link rel="stylesheet" type="text/css" href="../HelloHBuilder/demo.css">
+		<script language="JavaScript" type="text/javascript" src="jquery-easyui-1.3.3/jquery.min.js" charset="utf-8"></script>  
+	                                                          <!--(指定编码方式，防止出现乱码)引入EasyUI中使用的Jquery版本-->
+	    <script language="JavaScript" type="text/javascript" src="jquery-easyui-1.3.3/jquery.easyui.min.js" charset="utf-8"></script> 
+		<script language="JavaScript" type="text/javascript" src="jquery-easyui-1.3.3/locale/easyui-lang-zh_CN.js"></script>  <!--汉化-->
+	</head>
+		
+	<body>
+	
+			<h2>用户信息:</h2>
+			<p>显示所有用户信息，并可编辑部分信息</p>
+			<div style="margin:20px 0;"></div>
+		
+	<table id="dg" class="easyui-datagrid" title="Row Editing in DataGrid" style="width:1000px;height:auto"
+			data-options="
+				iconCls: 'icon-edit',
+				singleSelect: true,
+				toolbar: '#tb',
+				url: '/listUser',
+				method: 'get',
+				onClickRow: onClickRow
+			">
+		<thead>
+			<tr>
+				<th field="ck" checkbox="true"></th>
+				<th data-options="field:'userID',width:80">用户ID</th>
+				<th data-options="field:'name',width:80,editor:'textbox'">注册名</th>
+				<th data-options="field:'tel',width:100,editor:'textbox'">联系电话</th>
+				<th data-options="field:'age',width:60,align:'right',editor:{type:'numberbox',options:{precision:0}}">age</th>
+				<th data-options="field:'email',width:100,align:'right',editor:'textbox'">Email</th>
+				<th data-options="field:'sex',width:50,editor:'textbox'">性别</th>
+				<!--<th data-options="field:'IsAdmin',width:80,align:'center',editor:{type:'checkbox',options:{on:'true',off:'false'}}">管理员权限</th>-->
+				<th data-options="field:'IsAdmin',width:80,align:'center',editor:'textbox'">管理员权限</th>
+			</tr>
+		</thead>
+	</table>
+	
+
+	<div id="tb" style="width:1360px;height:auto">    
+    	<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="append()">Append</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="removeit()">Remove</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="accept()">Accept</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true" onclick="reject()">Reject</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="getChanges()">GetChanges</a>
+    </div>
+	
+	
+		<script type="text/javascript">
+		var editIndex = undefined;
+		
+		var submitindex = undefined;//用于提交时判别改动行
+		function endEditing(){
+			/**
+			 * 退出编辑状态
+			 */
+			if (editIndex == undefined){return true}
+			if ($('#dg').datagrid('validateRow', editIndex)){
+//				var ed = $('#dg').datagrid('getEditor', {index:editIndex,field:'productid'});
+//				var productname = $(ed.target).combobox('getText');
+				$('#dg').datagrid('getRows')[editIndex]['name'] = name;
+				$('#dg').datagrid('endEdit', editIndex);
+				editIndex = undefined;
+				return true;
+			} else {
+				return false;
+			}
+		}
+		function onClickRow(index){
+			if (editIndex != index){
+				if (endEditing()){
+					$('#dg').datagrid('selectRow', index)
+							.datagrid('beginEdit', index);
+					editIndex = index;
+					saveindex = index;
+				} else {
+					$('#dg').datagrid('selectRow', editIndex);
+					saveindex = editIndex;
+					
+							
+				}
+			}
+//			alert(index);
+//			alert('onClickRow:'+saveindex);
+		}
+		function append(){
+			if (endEditing()){
+				$('#dg').datagrid('appendRow',{status:'P'});
+				editIndex = $('#dg').datagrid('getRows').length-1;
+				$('#dg').datagrid('selectRow', editIndex)
+						.datagrid('beginEdit', editIndex);
+			}
+		}
+		function removeit(){
+			$.messager.confirm('Confirm', 'Are you sure?',  
+    		function(r) { 
+    			
+    			if(r.toString()=="true"){
+    				alert(r);
+    				onDelete();	}
+			}
+	        
+			);	
+		}
+		function onDelete(){
+			
+										        	//获取操作对象
+				var rowsData = $('#dg').datagrid('getRows');  
+//				ID=rowsData[editIndex].userID, 
+//			   var row= $('#dg').datagrid('getChanges');//?????????????????????????
+			   
+				
+				//数据库请求删除
+//          $('#dg').datagrid({  
+//              url: '/userDELETE' + "?userID=" + rowsData[editIndex].userID,  
+//              method: 'get'  
+//          }) 
+             $.get("/userDELETE",'userID='+rowsData[editIndex].userID,function(data){
+        	  if(data.toString()=="true"){
+        	  	alert("删除成功");
+        	  	//视图修改
+				if (editIndex == undefined){return}
+				$('#dg').datagrid('cancelEdit', editIndex)
+						.datagrid('deleteRow', editIndex);
+				editIndex = undefined;
+        	  
+        	  }
+        	  else{alert("删除失败");}
+         		 }) ;
+		}
+		function accept(){
+			var i=editIndex;//记录最后编辑位置，上传一行	
+					//修改视图
+            if (endEditing()){
+				$('#dg').datagrid('acceptChanges');
+			}
+			//发送数据(先进行更新操作)	
+            var rowsData = $('#dg').datagrid('getRows');  
+//          var json = []; //json数组在Java中解析未解决 
+            
+//          $.each(rowsData, function (i)  
+//          {  
+//              loc = {   
+//                  "ID":rowsData[i].ID,  
+//                  "LoginID": rowsData[i].LoginID,  
+//                  "UserName": rowsData[i].UserName,  
+//                  "Sex": rowsData[i].Sex,  
+//                  "Department": rowsData[i].Department,  
+//                  "Age": rowsData[i].Age  
+//              };  
+//              json.push(loc);  
+//          });  
+//          
+              //提取改动行信息
+//            alert('accept：'+editIndex);
+                loc = {   
+                    "userID":rowsData[i].userID,  
+                    "name": rowsData[i].name,  
+                    "tel": rowsData[i].tel,  
+                    "sex": rowsData[i].sex,  
+                    "age": rowsData[i].age,  
+                    "email": rowsData[i].email  
+//                  "IsAdmin" : rowsData[i].IsAdmin
+                };  
+                
+                
+//              json.push(loc);  
+            
+            
+//          json = JSON.stringify(json); //转换成json数据   
+ 			var json = JSON.stringify(loc);
+//            alert(json);  
+//          alert('send:'+json);
+           
+//         	$('#dg').datagrid({
+//              url: '/updateUser' + "?json=" + json+"",  
+//              method: 'get' 
+//              
+//          }) 
+			  $.get("/updateUser",'json='+json,function(data){
+        	  if(data.toString()=="true"){alert("保存成功");}
+        	  else{alert("保存失败");}
+          }) 
+        	  
+	        
+		}
+		function reject(){
+			$('#dg').datagrid('rejectChanges');
+			editIndex = undefined;
+		}
+		function getChanges(){
+			var rows = $('#dg').datagrid('getChanges');
+			alert(rows.length+' rows are changed!');
+		}
+	</script>
+    </body>
+    </html>
+	
