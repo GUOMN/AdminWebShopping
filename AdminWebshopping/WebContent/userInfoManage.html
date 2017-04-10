@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Basic DataGrid - jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="jquery-easyui-1.3.3/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="jquery-easyui-1.3.3/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="jquery-easyui-1.3.3/demo/demo.css">
+	<script type="text/javascript" src="jquery-easyui-1.3.3/jquery.min.js"></script>
+	<script type="text/javascript" src="jquery-easyui-1.3.3/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="jquery-easyui-1.3.3/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="jquery-easyui-1.3.3/jquery.edatagrid.js"></script>
+	<script>
+		 $(function(){
+	         $('#dg').edatagrid({
+	             url: '/listUser',
+	             saveUrl: '/updateUser',
+	             updateUrl: '/updateUser',
+	             destroyUrl: '/userDELETE'
+	         });
+	     });
+	</script>
+</head>
+<body>
+增加用户请设置ID为0
+    <table id="dg" title="用户管理" style="width:700px;height:365px"
+            toolbar="#toolbar" pagination="true" idField="id"
+            rownumbers="true" fitColumns="true" singleSelect="true">
+        <thead>
+            <tr>
+            	<th field="ck" checkbox="true"></th>
+            	<th field="userID" width="50" editor="{type:'validatebox',options:{required:true}}">用户ID</th>
+                <th field="name" width="50" editor="{type:'validatebox',options:{required:true}}">姓名</th>
+                <th field="tel" width="90" editor="{type:'validatebox',options:{required:true}}">电话</th>
+                <th field="email" width="150" editor="{type:'validatebox',options:{validType:'email',required:true}}">Email</th>
+                <th field="age" width="50" editor="{type:'numberbox',options:{precision:0}}">年龄</th>
+                <th field="sex" width="50" editor="{type:'validatebox',options:{required:true}}">性别</th>
+            </tr>
+        </thead>
+    </table>
+    
+    <div id="toolbar">
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="javascript:$('#dg').edatagrid('addRow')">添加用户</a>
+        <!--  <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg').edatagrid('destroyRow')">删除用户</a> -->
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg').edatagrid('destroyRow')">删除用户</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="javascript:$('#dg').edatagrid('saveRow')">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-undo" plain="true" onclick="javascript:$('#dg').edatagrid('cancelRow')">撤销</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="javascript:$('#dg').edatagrid('reload')">刷新列表</a>
+    </div>
+</body>
+</html>

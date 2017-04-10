@@ -64,13 +64,11 @@ public class UserServlet extends HttpServlet {
 		// 设置接收和响应字符编码格式，接收或响应中包含汉字时必须有相关声明
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=utf-8");
-		HttpSession session = request.getSession();// 没有Session就新建一个
-			int AdminID =  (Integer) session.getAttribute("AdminID");
-//		String ID= request.getParameter("userID");
-//		String json = new String(jsonString.getBytes("iso8859-1"), "utf-8");
+//			int OnDeleteUserID =  (Integer) session.getAttribute("id");
+		int OnDeleteUserID= Integer.valueOf( request.getParameter("id"));
 		
 		boolean back=false;
-		back=UserDAO.delete_user(Integer.valueOf(AdminID));
+		back=UserDAO.delete_user(Integer.valueOf(OnDeleteUserID));
 		PrintWriter out = response.getWriter();
 		out.write(String.valueOf(back));
 		out.flush();
@@ -86,17 +84,21 @@ public class UserServlet extends HttpServlet {
 		// 设置接收和响应字符编码格式，接收或响应中包含汉字时必须有相关声明
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=utf-8");
-		HttpSession session = request.getSession();// 没有Session就新建一个
-//		int AdminID = (int) session.getAttribute("AdminID");
-		String jsonString= request.getParameter("json");
-		String json = new String(jsonString.getBytes("iso8859-1"), "utf-8");
+		//request.getAttribute()方法返回reques，sessiont范围内存在的对象，而request.getParameter()方法是获取http提交过来的数据。
+		String isNewRecord=request.getParameter("isNewRecord");
+		int userID=Integer.valueOf( request.getParameter("userID"));
+		String name=request.getParameter("name");
+		String tel=request.getParameter("tel");
+		String email=request.getParameter("email");
+		String age=request.getParameter("age");
+		String qq=request.getParameter("qq");
+		String sex=request.getParameter("sex");
+		User u=new User(userID, name, sex, name, "1234", age, tel, email);
 		
-		
-		JSONObject jsonObject =JSONObject.fromObject(json);
-		User u  = (User) JSONObject.toBean(jsonObject,User.class);
-		u.setLoginName(u.getName());
+
 		boolean back=false;
 			
+		
 			try {
 				int ID= u.getUserID();//区分是否为新建用户
 				if(ID==0){

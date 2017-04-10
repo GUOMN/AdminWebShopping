@@ -21,16 +21,19 @@
     <servlet-name>UserServlet</servlet-name>
     <servlet-class>com.servlet.UserServlet</servlet-class>
   </servlet>
-	  <servlet-mapping>
-	    <servlet-name>UserServlet</servlet-name>
-	    <url-pattern>/listUser</url-pattern>
-	  </servlet-mapping>
-	  <servlet-mapping>
-	    <servlet-name>UserServlet</servlet-name>
-	    <url-pattern>/updateUser</url-pattern>
-	  </servlet-mapping>
-	  <servlet-mapping>
-	    <servlet-name>UserServlet</servlet-name>
-	    <url-pattern>/userDELETE</url-pattern>
-	  </servlet-mapping>
+	<servlet-mapping>
+  		<servlet-name>UserServlet</servlet-name>
+  		<url-pattern>/listUser</url-pattern>
+  		<!-- 列出用户列表(无参数) -->
+  	</servlet-mapping>
+  	  	<servlet-mapping>
+  		<servlet-name>UserServlet</servlet-name>
+  		<url-pattern>/updateUser</url-pattern>
+  		<!-- 修改用户表（增\改） -->
+  	</servlet-mapping>
+  	<servlet-mapping>
+  		<servlet-name>UserServlet</servlet-name>
+  		<url-pattern>/userDELETE</url-pattern>
+  		<!-- 删除用户（userID） -->
+  	</servlet-mapping>
 </web-app>

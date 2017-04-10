@@ -15,7 +15,29 @@ import com.model.User;
  * @data 2017/1/25
  */
 public class AdminDAO {
+	/**
+	 * 登录密码验证 传入用户名，密码（string） 返回布尔值
+	 */
+	public static int logIn(String userName, String userPW) throws SQLException {
+		int back = -1;
 
+		Connection con = DAO.getCon();
+		String sqlstr = "select Password,AdminID from `administrator` where LoginName = ?";
+		PreparedStatement pstm = con.prepareStatement(sqlstr);
+		pstm.setString(1, userName);
+		// System.out.println("userDAO,line28,login");
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next() && rs.getRow() > 0) {
+			String pw = rs.getString(1);
+			if (rs.getString(1).equals(userPW)) {
+				back = rs.getInt(2);
+			}
+
+			// System.out.println(userPW+'\t'+rs.getString(1));
+		}
+
+		return back;
+	}
 
 	
 	

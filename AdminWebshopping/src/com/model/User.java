@@ -2,6 +2,7 @@
 
 public class User {
 	private int userID;
+	private int id=0;
 	private String name = null;
 	private String sex = null;
 	private String loginName = null;
@@ -15,6 +16,33 @@ public class User {
 	private int subscribeNews = 0, subscribeOrderStatus = 0;
 	private String remark = null;
 	private boolean IsAdmin=false;
+
+	
+	
+	public User() {
+		super();
+	}
+
+	public User(int userID, String name, String sex, String loginName,
+			String loginPW, String age, String tel, String email) {
+		super();
+		this.userID = userID;
+		this.name = name;
+		this.sex = sex;
+		this.loginName = loginName;
+		this.loginPW = loginPW;
+		this.age = age;
+		this.tel = tel;
+		this.email = email;
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public boolean isIsAdmin() {
 		return IsAdmin;

@@ -23,31 +23,21 @@
 <script type="text/javascript">
 	$(function(){
 		// 数据
-		var treeData=[{
-			text:"根",
-			children:[{
-				text:"商城信息管理",
-				attributes:{
-					url:"gradeInfoManage.jsp"
-				}
-			},{
-				text:"新闻信息管理",
-				attributes:{
-					url:"studentInfoManage.jsp"
-				}
-			,{
-				text:"用户信息管理",
-				attributes:{
-					url:"studentInfoManage.jsp"
-				}
-			,{
-				text:"论坛信息管理",
-				attributes:{
-					url:"studentInfoManage.jsp"
-				}
-			
-			}]
-		}];
+			var treeData=[{
+						text:"根",
+						children:[{
+							text:"用户信息管理",
+							attributes:{
+								url:"userInfoManage.html"
+							}
+						},{
+							text:"商城管理",
+							attributes:{
+								url:"studentInfoManage.jsp"
+							}
+						}]
+					}];
+		
 		
 		// 实例化树菜单
 		$("#tree").tree({

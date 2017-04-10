@@ -47,6 +47,7 @@ public class UserDAO {
 				user.setAge(rs.getString("age"));
 				user.setTel(rs.getString("tel"));
 				user.setEmail(rs.getString("email"));
+				user.setId(rs.getInt("userID"));
 				list.add(user);	
 			}
 			pstm.close();
@@ -216,7 +217,7 @@ public class UserDAO {
 					pstm.setString(4, user.getName());
 					pstm.setString(5, user.getAge());
 					pstm.setString(6, user.getTel());
-					pstm.setBoolean(6, user.isIsAdmin());
+					pstm.setBoolean(7, false);
 					
 					
 					int flag = pstm.executeUpdate(); // 执行SQL语句，获得更新记录数
@@ -332,79 +333,6 @@ public class UserDAO {
 		return temp;
 	}
 
-	/**
-	 * 修改用户隐私设置 subscribeNews(int),subscribeOrderStatus(int) 返回布尔值
-	 */
-	public static boolean modifyUserINFO3(User temp) throws SQLException {
-		boolean back = false;
-		Connection con = DAO.getCon();
-		PreparedStatement pstm = null;
-		String sqlstr = "update `user` set subscribeNews=?,subscribeOrderStatus=?  where userID=?";
-		pstm = con.prepareStatement(sqlstr);
-		pstm.setInt(3, temp.getUserID());
-		pstm.setInt(1, temp.getSubscribeNews());
-		pstm.setInt(2, temp.getSubscribeOrderStatus());
-
-		int flag = pstm.executeUpdate(); // 执行SQL语句，获得更新记录数
-		if (flag > 0) {
-			back = true;
-			// JOptionPane.showMessageDialog(null, "添加成功！");
-		}
-		pstm.close();
-		con.close(); // 关闭连接
-		// ResultSet rs=pstm.executeQuery();
-		// while(rs.next()&&rs.getRow()>0){
-		// pass=rs.getString(1).equals(userPW);
-		// }
-
-		return back;
-	}
-
-	/**
-	 * 修改用户信息 上传头像 返回布尔值
-	 * 	 * 由于数据库存储类型限制，文件最大16M
-	 */
-	// public static boolean modifyICON(User temp) throws SQLException{
-	// boolean back=false;
-	// Connection con=DAO.getCon();
-	// PreparedStatement pstm=null;
-	// String sqlstr="update [user] set image='?'  where userID=?";
-	// pstm=con.prepareStatement(sqlstr);
-	// pstm.setString(1,temp.getImage());
-	// pstm.setInt(2,temp.getUserID());
-	// //存储用户头像
-	// try {
-	// FileInputStream in = null;
-	// if (temp.getImage() != null) {
-	// File file = new File(temp.getImage() );
-	//
-	// in = new FileInputStream(file);
-	//
-	// pstm.setBinaryStream(1, in, (int) file.length());
-	// } else {
-	// //
-	// }
-	// } catch (FileNotFoundException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	//
-	// int flag = pstm.executeUpdate(); // 执行SQL语句，获得更新记录数
-	// if (flag > 0) {
-	// back=true;
-	// // JOptionPane.showMessageDialog(null, "添加成功！");
-	// }
-	// pstm.close();
-	// con.close(); // 关闭连接
-	// // ResultSet rs=pstm.executeQuery();
-	// // while(rs.next()&&rs.getRow()>0){
-	// // pass=rs.getString(1).equals(userPW);
-	// // }
-	//
-	//
-	// return back;
-	// }
-	//
 
 	/*
 	 * 实现的功能： 用数据库存储图片数据，并且读取出来放在当前项目里
