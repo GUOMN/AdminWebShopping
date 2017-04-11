@@ -16,6 +16,7 @@ public class News {
 	private String keywords;
 	private  String date;
 	private String ImageURL=null;
+	private int id=0;
 
 	@Override
 	public String toString() {
@@ -25,6 +26,41 @@ public class News {
 				+ News_content + ", keywords=" + keywords + ", date=" + date
 				+ ", ImageURL=" + ImageURL + "]";
 	}
+	
+	
+	public News() {
+		super();
+	}
+
+
+	public News(Integer newsID, Integer sortId, Integer numhit, String author,
+			String title, String news_content, String keywords, String imageURL) {
+		super();
+		this.NewsId=newsID;
+		SortId = sortId;
+		this.numhit = numhit;
+		this.author = author;
+		this.title = title;
+		News_content = news_content;
+		this.keywords = keywords;
+		ImageURL = imageURL;
+	}
+
+
+	public int getId() {
+		return id;
+	}
+
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
 
 	public String getImageURL() {
 		return ImageURL;

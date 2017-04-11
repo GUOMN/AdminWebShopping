@@ -16,6 +16,7 @@ import com.dao.NewsDAO;
 import com.dao.NewsSortDAO;
 import com.model.News;
 import com.model.NewsSort;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 /**
  * 用于处理新闻相关页面的http请求 2016-10-23
  */
@@ -34,25 +35,27 @@ public class NewsServelet extends HttpServlet {
 		String servletpath = request.getServletPath();
 		// System.out.println(servletpath);
 		// 分析确定处理此次请求的文件
-		if ("/viewNews".equals(servletpath)) {
-			viewNews(request, response);
-		} else if ("/viewNewsSort".equals(servletpath)) {
-			viewNewsSort(request, response);
-		} else if ("/listNewsSort".equals(servletpath)) {
-			listNewsSort(request, response);
+		try {
+			if ("/listNews".equals(servletpath)) {
+				listNews(request, response);
+			} else if ("/deleteNews".equals(servletpath)) {
+				deleteNews(request, response);
+			}else if ("/updateNews".equals(servletpath)) {
+				updateNews(request, response);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
 		}
+			
 
 	}
 
 	/**
-	 * 查询新闻分类
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws IOException
+	 * 列出所有新闻，供管理员修改
 	 */
-	private void listNewsSort(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+	private void listNews(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		// 实现跨域请求需要在响应中添加如下响应头
 		response.addHeader("Access-Control-Allow-Origin", "*");
@@ -67,8 +70,7 @@ public class NewsServelet extends HttpServlet {
 		// String xx=request.getParameter("xxxxx");
 		//
 		// 此处填写业务代码
-		NewsSortDAO dao = new NewsSortDAO();
-		List<NewsSort> list = dao.queryALL();// 调用DAO查询数据
+		List<News> list = NewsDAO.listNews();// 调用DAO查询数据
 
 		// 将List转换成JSON数据，便于浏览器解析
 		// JSONObject jsonObject = JSONObject.fromObject(new News());
@@ -87,8 +89,15 @@ public class NewsServelet extends HttpServlet {
 
 	}
 
-	private void viewNewsSort(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+
+/**
+ * 新增、更新新闻
+ * @param request
+ * @param response
+ * @throws Exception 
+ */
+	private void updateNews(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		// 实现跨域请求需要在响应中添加如下响应头
 		response.addHeader("Access-Control-Allow-Origin", "*");
@@ -96,28 +105,37 @@ public class NewsServelet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=utf-8");
 		// 获取浏览器发送的参数
-		String sorId ="";
+		String NewsID="", SortId ="",title="",News_content="",keywords="",author="",numhit="",ImageURL="";
 		try {
-			 sorId = request.getParameter("classify");
+			NewsID = request.getParameter("newsId");
+			SortId = request.getParameter("sortId");
+			title = request.getParameter("title");
+			News_content = request.getParameter("news_content");
+			keywords = request.getParameter("keywords");
+			author = request.getParameter("author");
+			numhit = request.getParameter("numhit"); 
+			ImageURL = request.getParameter("imageURL");
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			 sorId="0";
+			 e.printStackTrace();
 		}
-		
-		NewsDAO dao = new NewsDAO();
-		List<News> list = dao.queryNews1(Integer.valueOf(sorId));
-		JSONArray jsonArray = JSONArray.fromObject(list);
+		News ns=new News(Integer.valueOf( NewsID), Integer.valueOf( SortId), Integer.valueOf(numhit), author, title, News_content, keywords, ImageURL);
+		boolean flag=false;
+		if(ns.getNewsId()==0){
+			flag=NewsDAO.addNews(ns);
+		}else {
+			flag=NewsDAO.updateNews(ns);
+		}
 
 		PrintWriter out = response.getWriter();
 		out.flush();
-		out.write(jsonArray.toString());
+		out.write(String.valueOf(flag));
 		out.flush();
 		out.close();
 
 	}
-
-	private void viewNews(HttpServletRequest request,
+	private void deleteNews(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		// TODO Auto-generated method stub
 		// 实现跨域请求需要在响应中添加如下响应头
@@ -126,14 +144,20 @@ public class NewsServelet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=utf-8");
 		// 获取浏览器发送的参数
-		String newID = request.getParameter("newID");
-		NewsDAO dao = new NewsDAO();
-		News resultNews=dao.queryNews(Integer.valueOf(newID) );
-
-		JSONObject JSON_of_news = JSONObject.fromObject(resultNews);
+		String newID = request.getParameter("id");
+		boolean flag = false;
+		try {
+			flag = NewsDAO.deleteNews(Integer.valueOf(newID));
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		PrintWriter out = response.getWriter();
 		out.flush();
-		out.write(JSON_of_news.toString());
+		out.write(String.valueOf(flag));
 		out.flush();
 		out.close();
 

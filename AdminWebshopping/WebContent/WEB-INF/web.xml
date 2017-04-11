@@ -58,4 +58,24 @@
   		<!-- 增加商品记录 -->
   	</servlet-mapping>
   	
+  	<servlet>
+		<servlet-name>News</servlet-name>
+  		<servlet-class>com.servlet.NewsServelet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+  		<servlet-name>News</servlet-name>
+  		<url-pattern>/listNews</url-pattern>
+  		  		<!-- 无参，返回所有商品 -->
+  	</servlet-mapping>
+  	<servlet-mapping>
+  		<servlet-name>News</servlet-name>
+  		<url-pattern>/updateNews</url-pattern>
+  		<!-- 增加商品记录(包含修改，增加时设id=0) -->
+  	</servlet-mapping>
+  	<servlet-mapping>
+  		<servlet-name>News</servlet-name>
+  		<url-pattern>/deleteNews</url-pattern>
+  		<!-- 增加商品记录 -->
+  	</servlet-mapping>
+  	
 </web-app>

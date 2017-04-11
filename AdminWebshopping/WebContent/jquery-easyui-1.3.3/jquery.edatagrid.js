@@ -294,12 +294,12 @@
 		editIndex: -1,
 		destroyMsg:{
 			norecord:{
-				title:'璀﹀憡',
-				msg:'娌℃湁璁板綍琚�変腑!'
+				title:'警告',
+				msg:'此操作将删除所有行！'
 			},
 			confirm:{
-				title:'绯荤粺鎻愮ず',
-				msg:'鎮ㄧ‘瀹氳鍒犻櫎杩欐潯璁板綍鍚�?'
+				title:'确认删除',
+				msg:'是否确认删除?'
 			}
 		},
 //		destroyConfirmTitle: 'Confirm',

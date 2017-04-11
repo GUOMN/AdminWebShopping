@@ -13,40 +13,38 @@
 	<script>
 		 $(function(){
 	         $('#dg').edatagrid({
-	             url: '/AdminWebshopping/listGoods',
-	             saveUrl: '/AdminWebshopping/updateGoods',
-	             updateUrl: '/AdminWebshopping/updateGoods',
-	             destroyUrl: '/AdminWebshopping/deleteGoods'
+	             url: '/AdminWebshopping/listNews',
+	             saveUrl: '/AdminWebshopping/updateNews',
+	             updateUrl: '/AdminWebshopping/updateNews',
+	             destroyUrl: '/AdminWebshopping/deleteNews'
 	         });
 	     });
 	</script>
 </head>
 <body>
 增加新纪录请设置ID为0
-    <table id="dg" title="商品管理" style="width:700px;height:365px"
+    <table id="dg" title="新闻管理" style="width:700px;height:365px"
             toolbar="#toolbar" pagination="true" idField="id"
             rownumbers="true" fitColumns="true" singleSelect="true">
         <thead>
             <tr>
             	<th field="ck" checkbox="true"></th>
-            	<th field="goodID" width="50" editor="{type:'validatebox',options:{required:true}}">商品ID</th>
-                <th field="name" width="50" editor="{type:'validatebox',options:{required:true}}">商品名</th>
-                <th field="categoryID" width="90" editor="{type:'validatebox',options:{required:true}}">分类ID</th>
-                <th field="number" width="150" editor="{type:'numberbox',options:{precision:0}}">库存</th>
-                <th field="priceCommon" width="50" editor="{type:'validatebox',options:{required:true}}">价格</th>
-                <th field="introduct" width="50" editor="{type:'validatebox',options:{required:true}}">简介</th>
-                <th field="material" width="50" editor="{type:'validatebox',options:{required:true}}">材料</th>
-                <th field="color" width="50" editor="{type:'validatebox',options:{required:true}}">颜色</th>
-                <th field="image" width="50" editor="{type:'validatebox',options:{required:true}}">图片路径</th>
-                <th field="modelFilelocation" width="50" editor="{type:'validatebox',options:{required:true}}">模型路径</th>
+            	<th field="newsId" width="50" editor="{type:'validatebox',options:{required:true}}">新闻ID</th>
+                <th field="sortId" width="50" editor="{type:'validatebox',options:{required:true}}">分类ID</th>
+                <th field="title" width="90" editor="{type:'validatebox',options:{required:true}}">标题</th>
+                <th field="news_content" width="50" editor="{type:'validatebox',options:{required:true}}">正文</th>
+                <th field="keywords" width="50" editor="{type:'validatebox',options:{required:true}}">关键字</th>
+                <th field="author" width="50" editor="{type:'validatebox',options:{required:true}}">作者</th>
+                <th field="numhit" width="50" editor="{type:'validatebox',options:{required:true}}">点击量</th>
+                <th field="imageURL" width="50" editor="{type:'validatebox',options:{required:true}}">图片路径</th>
             </tr>
         </thead>
     </table>
     
     <div id="toolbar">
-        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="javascript:$('#dg').edatagrid('addRow')">添加商品</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="javascript:$('#dg').edatagrid('addRow')">发布新闻</a>
         <!--  <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg').edatagrid('destroyRow')">删除用户</a> -->
-        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg').edatagrid('destroyRow')">删除商品</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg').edatagrid('destroyRow')">删除</a>
         <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="javascript:$('#dg').edatagrid('saveRow')">保存</a>
         <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-undo" plain="true" onclick="javascript:$('#dg').edatagrid('cancelRow')">撤销</a>
         <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="javascript:$('#dg').edatagrid('reload')">刷新列表</a>

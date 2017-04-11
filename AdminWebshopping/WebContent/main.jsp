@@ -31,9 +31,24 @@
 								url:"userInfoManage.html"
 							}
 						},{
-							text:"商成商品管理",
+							text:"商城商品管理",
 							attributes:{
 								url:"goodsManage.html"
+							}
+						},{
+							text:"商城订单管理",
+							attributes:{
+								url:"orderManage.html"
+							}
+						},{
+							text:"新闻管理",
+							attributes:{
+								url:"newsManage.html"
+							}
+						},{
+							text:"论坛管理",
+							attributes:{
+								url:"bbsManage.html"
 							}
 						}]
 					}];
@@ -68,7 +83,7 @@
 </head>
 <body class="easyui-layout">
 	<div region="north" style="height: 80px;background-color: #E0EDFF">
-		<div align="left" style="width: 80%;float: left"><img src="images/main.jpg"></div>
+		<div align="left" style="width: 80%;float: left"><img src="images/logo.png"></div>
 		<div style="padding-top: 50px;padding-right: 20px;">当前管理员用户：&nbsp;<font color="red" >${AdminName }</font></div>
 		
 	</div>

@@ -9,14 +9,8 @@ import java.util.Map;
 
 import com.model.News;
 /**
- * 实现功能： 1.通过id查询新闻,即通过新闻id，查找新闻详情 2.优化查询方法，添加过滤条件（如按照标题title查询） 3.模糊查询
- * ，例如，根据标题title模糊查询 4.进一步优化后的查询方法
- * 5.根据分类id（SortId），获取该分类的新闻标题（title），概览（keywords）
- * 
- * @author MYJ
- * @param id
- * @return news
- * 
+ * 实现功能： 1.通过id查询新闻,即通过新闻id，查找新闻详情 
+ * 2、列出所有新闻 3、新增记录 4、更新记录 5、删除记录
  */
 public class NewsDAO {
 
@@ -64,32 +58,23 @@ public class NewsDAO {
 	}
 
 	/**
-	 * 优化查询方法，添加过滤条件（如按照标题查询）
-	 * 
-	 * @param MYJ
-	 * @return
-	 * @throws Exception
+	 * 列出所有新闻
 	 */
-	public List<News> query(String name) throws Exception {
+	public static List<News> listNews() throws Exception {
 
 		List<News> result = new ArrayList<News>();
 
 		Connection con = DAO.getCon();
 		StringBuilder sb = new StringBuilder();
 		sb.append("select * from News ");
-
-		sb.append(" where title=? ");
-
 		PreparedStatement ptmt = con.prepareStatement(sb.toString());// 预编译
-
-		ptmt.setString(1, name);// 传参
 
 		ResultSet rs = ptmt.executeQuery();
 
 		// 遍历
 		while (rs.next()) {
 			News ns = new News();
-			ns.setNewsId(rs.getInt("NewsId"));
+			ns.setNewsId(rs.getInt("NewsID"));
 			ns.setSortId(rs.getInt("SortId"));
 			ns.setTitle(rs.getString("title"));
 			ns.setNews_content(rs.getString("News_content"));
@@ -99,14 +84,96 @@ public class NewsDAO {
 			ns.setNumhit(rs.getInt("numhit"));
 			ns.setDeldete(rs.getInt("deldete"));
 			ns.setImageURL(rs.getString("ImageURL"));
+			ns.setId(ns.getNewsId());
 
 			result.add(ns);
 		}
+		con.close();
+		ptmt.close();
 		return result;
 	}
+	
+	/**
+	 * 新增新闻
+	 */
+	public static boolean addNews(News ns) throws Exception {
+
+		boolean success=false;
+
+		Connection con = DAO.getCon();
+		StringBuilder sb = new StringBuilder();
+		sb.append("insert into news (SortId,title,News_content,keywords,date,author,numhit,ImageURL) values (?,?,?,?,now(),?,?,?) ");
+		PreparedStatement ptmt = con.prepareStatement(sb.toString());// 预编译
+		ptmt.setInt(1, ns.getSortId());
+		ptmt.setString(2, ns.getTitle());
+		ptmt.setString(3, ns.getNews_content());
+		ptmt.setString(4, ns.getKeywords());
+		ptmt.setString(5, ns.getAuthor());
+		ptmt.setInt(6, ns.getNumhit());
+		ptmt.setString(7, ns.getImageURL());
+
+		int flag=ptmt.executeUpdate();
+		if(flag==1) success=true;
+		
+		con.close();
+		ptmt.close();
+		return success;
+	}
+
+	
+	/**
+	 * 删除新闻
+	 */
+	public static boolean deleteNews(int id) throws Exception {
+
+		boolean success=false;
+
+		Connection con = DAO.getCon();
+		StringBuilder sb = new StringBuilder();
+		sb.append("delete from news where NewsID=?");
+		PreparedStatement ptmt = con.prepareStatement(sb.toString());// 预编译
+		ptmt.setInt(1, id);
+		int flag=ptmt.executeUpdate();
+		if(flag==1) success=true;
+		
+		con.close();
+		ptmt.close();
+		return success;
+	}
+
+	
+	/**
+	 * 更改新闻内容
+	 */
+	public static boolean   updateNews(News ns) throws Exception {
+
+		boolean success=false;
+
+		Connection con = DAO.getCon();
+		StringBuilder sb = new StringBuilder();
+		sb.append("update news set SortId=?,title=?,News_content=?,keywords=?,date=now(),author=?,numhit=?,ImageURL=? where NewsID=?  ");
+		PreparedStatement ptmt = con.prepareStatement(sb.toString());// 预编译
+
+		ptmt.setInt(1, ns.getSortId());
+		ptmt.setString(2, ns.getTitle());
+		ptmt.setString(3, ns.getNews_content());
+		ptmt.setString(4, ns.getKeywords());
+		ptmt.setString(5, ns.getAuthor());
+		ptmt.setInt(6, ns.getNumhit());
+		ptmt.setString(7, ns.getImageURL());
+		ptmt.setInt(8, ns.getNewsId());
+		
+		int flag=ptmt.executeUpdate();
+		if(flag==1) success=true;
+		
+		con.close();
+		ptmt.close();
+		return success;
+	}
+
 
 	/**
-	 * 模糊查询
+	 * 名称模糊查询
 	 * 
 	 * @param name
 	 * @return
@@ -147,53 +214,6 @@ public class NewsDAO {
 		return result;
 	}
 
-	/**
-	 * 进一步优化后的查询方法
-	 * 
-	 * @param params
-	 * @return
-	 * @throws Exception
-	 */
-	public List<News> query(List<Map<String, Object>> params) throws Exception {
-		List<News> result = new ArrayList<News>();
-
-		Connection con = DAO.getCon();
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("select * from News where 1=1 ");// 小技巧where 1=1
-
-		// 先判断集合是否为空，然后遍历集合
-		if (params != null && params.size() > 0) {
-			for (int i = 0; i < params.size(); i++) {
-				Map<String, Object> map = params.get(i);
-				sb.append(" and " + map.get("name") + " " + map.get("rela")
-						+ " " + map.get("value") + " ");
-			}
-		}
-
-		PreparedStatement ptmt = con.prepareStatement(sb.toString());// 预编译
-
-		System.out.println(sb.toString()); // 打印SQL语句
-
-		ResultSet rs = ptmt.executeQuery();
-
-		while (rs.next()) {
-			News ns = new News();
-			ns.setNewsId(rs.getInt("NewsId"));
-			ns.setSortId(rs.getInt("SortId"));
-			ns.setTitle(rs.getString("title"));
-			ns.setNews_content(rs.getString("News_content"));
-			ns.setKeywords(rs.getString("keywords"));
-			ns.setDate(rs.getDate("date"));
-			ns.setAuthor(rs.getString("author"));
-			ns.setNumhit(rs.getInt("numhit"));
-			ns.setDeldete(rs.getInt("deldete"));
-			ns.setImageURL(rs.getString("ImageURL"));
-
-			result.add(ns);
-		}
-		return result;
-	}
 
 	/**
 	 * 根据分类id（SortId），获取该分类的新闻标题（title），概览（keywords）
