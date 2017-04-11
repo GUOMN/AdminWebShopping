@@ -9,13 +9,49 @@ public class Goods {
 	private String introduct = null;// 简介
 	private String material = null;// 商标
 	private String attachment = null;// 附件
-	private String color = null;// 价格状态（特价？平价？）
+	private String color = null;// 
 	private String del = null;
 	private String image = null;// 图片（url）
 	private int handinventory;// 库存
 	private double priceCommon;// 平价价格
 	private double priceSpecial;// 特价价格
 	private String modelFilelocation = null;
+	private int id=0;
+
+	
+	
+	public Goods(int goodID, int categoryID, String number, String name,
+			String introduct, String material, String color, double priceCommon) {
+		super();
+		this.goodID = goodID;
+		this.categoryID = categoryID;
+		this.number = number;
+		this.name = name;
+		this.introduct = introduct;
+		this.material = material;
+		this.color = color;
+		this.priceCommon = priceCommon;
+	}
+
+
+
+	public Goods() {
+		super();
+	}
+
+
+
+	public int getId() {
+		return id;
+	}
+
+
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+
 
 	public String getModelFilelocation() {
 		return modelFilelocation;

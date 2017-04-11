@@ -15,6 +15,7 @@ import net.sf.json.JSONObject;
 
 import com.dao.GoodsDAO;
 import com.model.Goods;
+import com.mysql.jdbc.util.Base64Decoder.IntWrapper;
 /**
  * 用于商品列表，商品详情
  * @author 郭梦男
@@ -35,7 +36,7 @@ public class GoodsServlet extends HttpServlet {
 		String servletpath = request.getServletPath();
 		// System.out.println(servletpath);
 		// 分析确定处理此次请求的文件
-		if ("/listgoods".equals(servletpath)) {
+		if ("/listGoods".equals(servletpath)) {
 			// System.out.println("line:34,"+servletpath);
 			// listgoods(request,response);
 			try {
@@ -44,46 +45,56 @@ public class GoodsServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} else if ("/viewgoods".equals(servletpath)) {
-			viewgoods(request, response);
-			System.out.println("line44:viewGoods");
+		} else if ("/updateGoods".equals(servletpath)) {
+			updateGoods(request, response);
+			System.out.println("line44:updateGoods");
+		} else if ("/deleteGoods".equals(servletpath)) {
+			deleteGoods(request, response);
+			System.out.println("line44:deleteGoods");
 		}
-
-		// if("/listALLgoods".equals(servletpath))
-
-		// listbrowsegoods(request,response);
-		// else if("/clearbrowse".equals(servletpath))
-		// clearbrowse(request,response);
 	}
 
-	// protected void listgoods(HttpServletRequest request, HttpServletResponse
-	// response)throws ServletException, IOException {
-	// try {
-	// Goods goods=new Goods();
-	// GoodsDAO goodsDao=new GoodsDAO();
-	// SuperDao s1=new SuperDao();
-	// String strcurrentP=request.getParameter("currentP");
-	// String strcurrentG=request.getParameter("currentG");
-	// String goWhich="listgoods";
-	//
-	// System.out.println("flag11:listALLgoods");
-	//
-	// List<?> goodslist=goodsDao.getAllGoods(strcurrentP,strcurrentG,goWhich);
-	//
-	//
-	// //不采用返回值的方式返回查询结果
-	// //下面两句设置request.setAttribute，在jsp文件中可以读取，实现了信息传递
-	// request.setAttribute("goodslist",goodslist);
-	// //分页的list，每一页是商品的list
-	// request.setAttribute("pageBar",s1.getDaoPage());
-	// //分页信息，包含页数，每页组数
-	// } catch (SQLException e) {
-	// System.out.println("in goodsservelt");
-	// e.printStackTrace();
-	// }
-	// RequestDispatcher rd=request.getRequestDispatcher("/listGoods.jsp");
-	// rd.forward(request,response);
-	// }
+	
+
+	private void deleteGoods(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		// TODO Auto-generated method stub
+		String ID = request.getParameter("id");
+		boolean flag=GoodsDAO.deleteGoods(Integer.valueOf(ID));
+		PrintWriter out = response.getWriter();
+		out.write(String.valueOf(flag));
+		
+	}
+
+	private void updateGoods(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		// TODO Auto-generated method stub
+		String goodID = request.getParameter("goodID");
+		String categoryID = request.getParameter("categoryID");
+		String number = request.getParameter("number");
+		String name = request.getParameter("name");
+		String introduct = request.getParameter("introduct");
+		String material = request.getParameter("material");
+		String color = request.getParameter("color");
+		String priceCommon = request.getParameter("priceCommon");
+		Goods good=new Goods(Integer.valueOf(goodID), Integer.valueOf(categoryID), number, name, introduct, material, color,Double.valueOf(priceCommon) );
+		boolean success=false;
+		switch (Integer.valueOf(goodID)) {
+		case 0:
+			System.out.println("新建商品记录");
+			success=GoodsDAO.addGoods(good);
+			break;
+
+		default:
+			System.out.println("更新商品记录");
+			success=GoodsDAO.updateGoods(good);
+			break;
+		}
+		PrintWriter out = response.getWriter();
+		out.write(String.valueOf(success));
+		
+		
+	}
 
 	protected void viewgoods(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -97,8 +108,7 @@ public class GoodsServlet extends HttpServlet {
 		// request.getRequestDispatcher("goods.html").forward(request,
 		// response);
 		if (ID != null) {
-			GoodsDAO goodsDao = new GoodsDAO();
-			Goods good = new GoodsDAO().queryGoods(Integer.valueOf(ID));
+			Goods good = GoodsDAO.queryGoods(Integer.valueOf(ID));
 			// 实现跨域请求需要在响应中添加如下响应头
 			response.addHeader("Access-Control-Allow-Origin", "*");
 			// JSON汉字解析乱码。加下行
@@ -112,44 +122,8 @@ public class GoodsServlet extends HttpServlet {
 		}
 
 	}
-
 	/**
-	 * 打开商城首页自动加载所有分类，第一页（默认） 返回所有商品
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
-	 * @throws SQLException
-	 */
-	// protected void listgoods(HttpServletRequest request, HttpServletResponse
-	// response)throws ServletException, IOException, SQLException {
-	// Goods goods=new Goods();
-	// GoodsDAO goodsDao=new GoodsDAO();
-	// // //获取所有商品
-	// JSONObject jsonObject = JSONObject.fromObject(goods);
-	// // System.out.println(jsonObject);
-	// List<Goods> list=goodsDao.queryGoods(0,1000000);
-	// JSONArray jsonArray= JSONArray.fromObject(list);
-	// //JSON汉字解析乱码。加下行
-	// response.setContentType("text/html; charset=utf-8");
-	// PrintWriter out = response.getWriter();
-	// out.write(jsonArray.toString());
-	// System.out.println("out.write");
-	//
-	//
-	//
-	//
-	// // String strcurrentP=request.getParameter("currentP");
-	// // String strcurrentG=request.getParameter("currentG");
-	//
-	//
-	//
-	//
-	//
-	// }
-	/**
-	 * 查询返回指定页
+	 * 列出所有商品，用于管理
 	 * 
 	 * @param request
 	 * @param response
@@ -165,34 +139,9 @@ public class GoodsServlet extends HttpServlet {
 		// request.setCharacterEncoding("text/html; charset=utf-8");
 		// response.setContentType("text/html; charset=utf-8");
 
-		Goods goods = new Goods();
-		GoodsDAO goodsDao = new GoodsDAO();
 
-		String categoryID = request.getParameter("categoryID");
-		String page = request.getParameter("page");
-		String orderBY = request.getParameter("orderBY");
-		String order = request.getParameter("order");
-		String flag = request.getParameter("num");//-1 代表limit返回所有记录
-		int num = Integer.valueOf(flag);
-		num=12;
+		List<Goods> list = GoodsDAO.queryGoods();
 
-		// categoryID="1";
-		// page="1";
-		// orderBY="1";
-		// order="1";
-
-		// System.out.println("line157"+categoryID);
-		// System.out.println(page);
-		// System.out.println(orderBY);
-		// System.out.println(order);
-
-		List<Goods> list = goodsDao.queryGoods2(categoryID, Integer.valueOf(page),
-				Integer.valueOf(orderBY), Integer.valueOf(order), num);
-
-		// JSONObject jsonObject = JSONObject.fromObject(goods);
-		// System.out.println(jsonObject);
-
-		// JSONArray jsonArray= JSONArray.fromObject(goodslist);
 		JSONArray jsonArray = JSONArray.fromObject(list);
 
 		// 实现跨域请求需要在响应中添加如下响应头
@@ -203,7 +152,7 @@ public class GoodsServlet extends HttpServlet {
 
 		PrintWriter out = response.getWriter();
 		out.write(jsonArray.toString());
-		System.out.println(jsonArray.toString());
+		System.out.println("listGoods");
 	}
 
 }

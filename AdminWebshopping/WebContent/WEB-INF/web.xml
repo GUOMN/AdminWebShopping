@@ -36,4 +36,26 @@
   		<url-pattern>/userDELETE</url-pattern>
   		<!-- 删除用户（userID） -->
   	</servlet-mapping>
+  	
+  	
+  	<servlet>
+		<servlet-name>goods</servlet-name>
+  		<servlet-class>com.servlet.GoodsServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+  		<servlet-name>goods</servlet-name>
+  		<url-pattern>/listGoods</url-pattern>
+  		  		<!-- 无参，返回所有商品 -->
+  	</servlet-mapping>
+  	<servlet-mapping>
+  		<servlet-name>goods</servlet-name>
+  		<url-pattern>/updateGoods</url-pattern>
+  		<!-- 增加商品记录(包含修改，增加时设id=0) -->
+  	</servlet-mapping>
+  	<servlet-mapping>
+  		<servlet-name>goods</servlet-name>
+  		<url-pattern>/deleteGoods</url-pattern>
+  		<!-- 增加商品记录 -->
+  	</servlet-mapping>
+  	
 </web-app>

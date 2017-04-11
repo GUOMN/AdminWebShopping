@@ -31,9 +31,9 @@
 								url:"userInfoManage.html"
 							}
 						},{
-							text:"商城管理",
+							text:"商成商品管理",
 							attributes:{
-								url:"studentInfoManage.jsp"
+								url:"goodsManage.html"
 							}
 						}]
 					}];

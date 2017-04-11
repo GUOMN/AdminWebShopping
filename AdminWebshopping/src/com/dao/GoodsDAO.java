@@ -15,63 +15,10 @@ import com.model.Goods;
  */
 public class GoodsDAO {
 
-	/**
-	 * 分页获取所有商品（只返回一页）
-	 */
-	public List getPGoods(String strcurrentP, String strcurrentG, String goWhich)
-			throws SQLException {
-		// desc降序，asc升序
-		String sqlall = "select * from goods order by goodID desc";
-		SuperDao s1 = new SuperDao();
-		s1.setDaoPage(sqlall, null, strcurrentP, strcurrentG, goWhich);// 分页
-		int currentP = s1.getDaoPage().getCurrentP();// 页数
-		int top1 = s1.getDaoPage().getPerR();// 每页显示的记录数
-		int top2 = (currentP - 1) * top1;// 总记录数
-		String sqlsub = "";
-		if (currentP == 1)
-			sqlsub = "select top " + top1
-					+ " goodID from goods order by goodID desc";
-		else
-			sqlsub = "select top "
-					+ top1
-					+ " goodID from goods where (goodID < (select min(goodID) "
-					+ "from (select top "
-					+ top2
-					+ " goodID from goods order by goodID desc) as minv)) order by goodID desc";
-		//
-		// List alllist=getList(sqlsub,null);//总返回表
-		// List goodslist=divide(alllist,top1);//返回表的表，元素是页
-
-		List alllist = queryGoods(0, 10000000);// 根据参数查询一页数目的goods
-		List goodslist = divide(alllist, top1);// 返回表的表，元素是行（每行3个goods元素）
-		return alllist;
-	}
-
-	private List divide(List list, int perR) {
-		// 取到所有组分页,元素通过queryGoods（9，“任意字符串”）返回
-		List goodslist = null;
-		if (list != null) {
-			goodslist = new ArrayList();
-			/* ①首先补齐长度 */
-			int blank = perR - list.size(); // 因为每页显示perR条记录，所以list的长度只能等于perR或小于perR
-			if (blank > 0) { // 若list的长度小于perR，则向list中存放blank个null值，将list长度补齐到perR
-				for (int i = 0; i < blank; i++)
-					list.add(null);
-			}
-			/* ②然后进行划分 */
-			for (int i = 0; i < 2; i++) { // 平均分成3份(行数)
-				List temp = new ArrayList();
-				for (int j = 0; j < 3; j++) { // 将每份中的元素存储到temp中
-					temp.add(list.get(3 * i + j));
-				}
-				goodslist.add(temp); // 存储temp到medialist中
-			}
-		}
-		return goodslist;
-	}
+	
 
 	// 可以通过goodID返回行(用于显示商品详情页)
-	public Goods queryGoods(int ID) {
+	public static Goods queryGoods(int ID) {
 		Goods bs = new Goods();
 		try {
 			Connection con = DAO.getCon();
@@ -94,6 +41,7 @@ public class GoodsDAO {
 				bs.setImage(rs.getString(9));
 				bs.setModelFilelocation(rs.getString("3DModelFile"));
 				bs.setPriceCommon(rs.getDouble("price"));
+				bs.setId(bs.getGoodID());
 			}
 			pstm.close();
 			rs.close();
@@ -109,39 +57,77 @@ public class GoodsDAO {
 		}
 
 	}
+	
+	/**
+	 * 列出所有商品
+	 */
+	public static List<Goods> queryGoods() {
+		
+		try {
+			Connection con = DAO.getCon();
+			List<Goods> list = new ArrayList<Goods>();
+			PreparedStatement pstm = con
+					.prepareStatement("select * from goods");
+			ResultSet rs = pstm.executeQuery();
+			while (rs.next() && rs.getRow() > 0) {
+				Goods bs = new Goods();
+				bs.setGoodID(rs.getInt("goodID"));
+				bs.setCategoryID(rs.getInt("categoryID"));
+				bs.setSex(rs.getString("sex"));
+				bs.setNumber(rs.getString("number"));
+				bs.setName(rs.getString("name"));
+				bs.setIntroduct(rs.getString("introduct"));
+				bs.setMaterial(rs.getString("material"));
+				bs.setPriceCommon(rs.getDouble("price"));
+				bs.setPriceSpecial(rs.getDouble("price"));
+				bs.setColor(rs.getString("color"));
+				bs.setImage(rs.getString("image"));
+				bs.setModelFilelocation("3DModelFile");
+				bs.setId(bs.getGoodID());
+				list.add(bs);
+			}
+			pstm.close();
+			rs.close();
+			con.close();
+			return list;
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			// JOptionPane.showMessageDialog(null, "数据库异常");
+			System.out.println("读取失败");
+			return null;
+		}
+	}
 
 	/**
 	 * 用价格区间筛选 sql =
 	 * "Select * from [sheet1$] Where 出库日期 between  #2005-1-4# and #2005-1-10#"
 	 */
-	public List<Goods> queryGoods(double bottom, double top) {
+	public static List<Goods> queryGoods(double bottom, double top) {
 		List<Goods> list = new ArrayList<Goods>();
 		try {
 			Connection con = DAO.getCon();
 
 			PreparedStatement pstm = con
-					.prepareStatement("select goodID,categoryID,sex,number,name,introduct,material,attachment,"
-							+ "price_common,price_special,color,handinventory,del,image "
-							+ "from goods where price_common between ? and ?");
+					.prepareStatement("select * from goods where price_common between ? and ?");
 			pstm.setDouble(1, bottom);
 			pstm.setDouble(2, top);
 			ResultSet rs = pstm.executeQuery();
 			while (rs.next() && rs.getRow() > 0) {
 				Goods bs = new Goods();// 注意此对象声明位置
-				bs.setGoodID(rs.getInt(1));
-				bs.setCategoryID(rs.getInt(2));
-				bs.setSex(rs.getString(3));
-				bs.setNumber(rs.getString(4));
-				bs.setName(rs.getString(5));
-				bs.setIntroduct(rs.getString(6));
-				bs.setMaterial(rs.getString(7));
-				bs.setAttachment(rs.getString(8));
-				bs.setPriceCommon(rs.getDouble(9));
-				bs.setPriceSpecial(rs.getDouble(10));
-				bs.setColor(rs.getString(11));
-				bs.setHandinventory(rs.getInt(12));
-				bs.setDel(rs.getString(13));
-				bs.setImage(rs.getString(14));
+				bs.setGoodID(rs.getInt("goodID"));
+				bs.setCategoryID(rs.getInt("categoryID"));
+				bs.setSex(rs.getString("sex"));
+				bs.setNumber(rs.getString("number"));
+				bs.setName(rs.getString("name"));
+				bs.setIntroduct(rs.getString("introduct"));
+				bs.setMaterial(rs.getString("material"));
+				bs.setPriceCommon(rs.getDouble("price"));
+				bs.setPriceSpecial(rs.getDouble("price"));
+				bs.setColor(rs.getString("color"));
+				bs.setImage(rs.getString("image"));
+				bs.setModelFilelocation("3DModelFile");
+				bs.setId(bs.getGoodID());
 				list.add(bs);
 				// System.out.println("in DAO"+bs.getBrand());
 			}
@@ -164,7 +150,7 @@ public class GoodsDAO {
 	 * 页面商品获取重要函数 重载，根据分类查 用categoryID，查找符合条件的所有goodID orderBY(排序依据)0:忽略此条件 1:销量
 	 * 2:价格 3：人气 order（升/降序）0:忽略此条件 1:升序 2：降序
 	 */
-	public List<Goods> queryGoods2(String categoryID, int page, int orderBY,
+	public static List<Goods> queryGoods(String categoryID, int page, int orderBY,
 			int order, int num) {
 
 		String SQLstr = null;
@@ -238,6 +224,7 @@ public class GoodsDAO {
 				bs.setName(rs.getString(2));
 				bs.setImage(rs.getString(3));
 				bs.setPriceCommon(rs.getDouble("price"));
+				bs.setId(bs.getGoodID());
 				list.add(bs);
 			}
 			rs.close();
@@ -253,31 +240,28 @@ public class GoodsDAO {
 	/**
 	 * 根据名称模糊查询
 	 */
-	public List<Goods> queryGoods(String goodName) {
+	public static List<Goods> queryGoods(String goodName) {
 		Goods bs = new Goods();
 		try {
 			Connection con = DAO.getCon();
 			List<Goods> list = new ArrayList<Goods>();
 			PreparedStatement pstm = con
-					.prepareStatement("select goodID,categoryID,sex,number,name,introduct,material,attachment,"
-							+ "price_common,price_special,color,handinventory,del,image "
-							+ "from goods where name like '%" + goodName + "%'");
+					.prepareStatement("select * from goods where name like '%" + goodName + "%'");
 			ResultSet rs = pstm.executeQuery();
 			while (rs.next() && rs.getRow() > 0) {
-				bs.setGoodID(rs.getInt(1));
-				bs.setCategoryID(rs.getInt(2));
-				bs.setSex(rs.getString(3));
-				bs.setNumber(rs.getString(4));
-				bs.setName(rs.getString(5));
-				bs.setIntroduct(rs.getString(6));
-				bs.setMaterial(rs.getString(7));
-				bs.setAttachment(rs.getString(8));
-				bs.setPriceCommon(rs.getDouble(9));
-				bs.setPriceSpecial(rs.getDouble(10));
-				bs.setColor(rs.getString(11));
-				bs.setHandinventory(rs.getInt(12));
-				bs.setDel(rs.getString(13));
-				bs.setImage(rs.getString(14));
+				bs.setGoodID(rs.getInt("goodID"));
+				bs.setCategoryID(rs.getInt("categoryID"));
+				bs.setSex(rs.getString("sex"));
+				bs.setNumber(rs.getString("number"));
+				bs.setName(rs.getString("name"));
+				bs.setIntroduct(rs.getString("introduct"));
+				bs.setMaterial(rs.getString("material"));
+				bs.setPriceCommon(rs.getDouble("price"));
+				bs.setPriceSpecial(rs.getDouble("price"));
+				bs.setColor(rs.getString("color"));
+				bs.setImage(rs.getString("image"));
+				bs.setModelFilelocation("3DModelFile");
+				bs.setId(bs.getGoodID());
 				list.add(bs);
 			}
 			pstm.close();
@@ -294,18 +278,10 @@ public class GoodsDAO {
 	}
 
 	/**
-	 * 复合条件筛选，用if代码块完成不同条件数目的SQL语句组合
-	 */
-	public List<Goods> queryGoods(ArrayList<Object> inList) {
-		List<Goods> list = new ArrayList<Goods>();
-		return list;
-	}
-
-	/**
 	 * @throws SQLException
 	 *             返回选定分类商品总数(用于概览)
 	 */
-	public int queryGoodsNumber(String categoryID) throws SQLException {
+	public static int queryGoodsNumber(String categoryID) throws SQLException {
 		int all = 0;
 		// String sqlall="select goodID from goods order by goodID";
 		String sqlall = "select count(*) from goods";
@@ -322,6 +298,106 @@ public class GoodsDAO {
 		con.close();
 		return all;
 
+	}
+	
+	/**
+	 * 新建商品记录
+	 */
+	public static boolean addGoods(Goods gs) {
+		boolean success=false;
+		try {
+			Connection con = DAO.getCon();
+			PreparedStatement pstm = con
+					.prepareStatement("INSERT INTO goods (NAME,categoryID,material,color,price,image,3DModelFile,introduct,number) VALUES (?,?,?,?,?,?,?,?,?)");
+			pstm.setString(1, gs.getName());
+			pstm.setInt(2, gs.getCategoryID());
+			pstm.setString(3, gs.getMaterial());
+			pstm.setString(4, gs.getColor());
+			pstm.setDouble(5, gs.getPriceCommon());
+			pstm.setString(6, gs.getImage());
+			pstm.setString(7, gs.getModelFilelocation());
+			pstm.setString(8, gs.getIntroduct());
+			pstm.setInt(9,Integer.valueOf( gs.getNumber()));
+			
+			int flag=pstm.executeUpdate();
+			if(flag==1){
+				success=true;
+			}
+			pstm.close();
+			con.close();
+			return success;
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			// JOptionPane.showMessageDialog(null, "数据库异常");
+			System.out.println("新建商品失败");
+			return false;
+		}
+	}
+	/**
+	 * 更改商品记录
+	 */
+	public static boolean updateGoods(Goods gs) {
+		boolean success=false;
+		try {
+			Connection con = DAO.getCon();
+			PreparedStatement pstm = con
+					.prepareStatement("UPDATE goods SET NAME=?,categoryID=?,material=?,color=?,price=?,image=?,3DModelFile=?,introduct=?,number=? where goodID=?");
+			pstm.setString(1, gs.getName());
+			pstm.setInt(2, gs.getCategoryID());
+			pstm.setString(3, gs.getMaterial());
+			pstm.setString(4, gs.getColor());
+			pstm.setDouble(5, gs.getPriceCommon());
+			pstm.setString(6, gs.getImage());
+			pstm.setString(7, gs.getModelFilelocation());
+			pstm.setString(8, gs.getIntroduct());
+			pstm.setInt(9,Integer.valueOf( gs.getNumber()));
+			pstm.setInt(10,gs.getGoodID());
+			
+			int flag=pstm.executeUpdate();
+			if(flag==1){
+				success=true;
+			}
+			pstm.close();
+			con.close();
+			return success;
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			// JOptionPane.showMessageDialog(null, "数据库异常");
+			System.out.println("更改商品失败");
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	/**
+	 * 删除商品记录
+	 */
+	public static boolean deleteGoods(int goodsID) {
+		boolean success=false;
+		try {
+			Connection con = DAO.getCon();
+			List<Goods> list = new ArrayList<Goods>();
+			PreparedStatement pstm = con
+					.prepareStatement("DELETE FROM goods WHERE goodID=?");
+			pstm.setInt(1,goodsID);
+			
+			
+			int flag=pstm.executeUpdate();
+			if(flag==1){
+				success=true;
+			}
+			pstm.close();
+			con.close();
+			return success;
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			// JOptionPane.showMessageDialog(null, "数据库异常");
+			System.out.println("删除商品失败");
+			return false;
+		}
 	}
 
 }
