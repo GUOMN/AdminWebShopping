@@ -286,6 +286,13 @@
 					}
 				});
 			});
+		},
+		ShowDetileOnRight: function(jq){
+			return jq.each(function(){
+				var row = dg.datagrid('getSelected');
+				var id=row.id;
+				$(dg2).datagrid('reload');//刷新
+			});
 		}
 	};
 	

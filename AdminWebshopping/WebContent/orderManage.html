@@ -13,43 +13,103 @@
 	<script>
 		 $(function(){
 	         $('#dg').edatagrid({
-	             url: '/AdminWebshopping/listGoods',
-	             saveUrl: '/AdminWebshopping/updateGoods',
-	             updateUrl: '/AdminWebshopping/updateGoods',
-	             destroyUrl: '/AdminWebshopping/deleteGoods'
+	             url: '/AdminWebshopping/ListOrder',
+	             saveUrl: '/AdminWebshopping/updateOrder',
+	             updateUrl: '/AdminWebshopping/updateOrder',
+	             destroyUrl: '/AdminWebshopping/deleteOrder'
+	         });
+	     });
+		 $(function(){
+	         $('#dg1').edatagrid({
+	             url: '',
+	             saveUrl: '/AdminWebshopping/updateOrderItem',
+	             updateUrl: '/AdminWebshopping/updateOrderItem',
+	             destroyUrl: '/AdminWebshopping/deleteOrderItem'
 	         });
 	     });
 	</script>
 </head>
 <body>
-增加新纪录请设置ID为0
-    <table id="dg" title="订单管理" style="width:700px;height:365px"
-            toolbar="#toolbar" pagination="true" idField="id"
-            rownumbers="true" fitColumns="true" singleSelect="true">
-        <thead>
-            <tr>
-            	<th field="ck" checkbox="true"></th>
-            	<th field="goodID" width="50" editor="{type:'validatebox',options:{required:true}}">商品ID</th>
-                <th field="name" width="50" editor="{type:'validatebox',options:{required:true}}">商品名</th>
-                <th field="categoryID" width="90" editor="{type:'validatebox',options:{required:true}}">分类ID</th>
-                <th field="number" width="150" editor="{type:'numberbox',options:{precision:0}}">库存</th>
-                <th field="priceCommon" width="50" editor="{type:'validatebox',options:{required:true}}">价格</th>
-                <th field="introduct" width="50" editor="{type:'validatebox',options:{required:true}}">简介</th>
-                <th field="material" width="50" editor="{type:'validatebox',options:{required:true}}">材料</th>
-                <th field="color" width="50" editor="{type:'validatebox',options:{required:true}}">颜色</th>
-                <th field="image" width="50" editor="{type:'validatebox',options:{required:true}}">图片路径</th>
-                <th field="modelFilelocation" width="50" editor="{type:'validatebox',options:{required:true}}">模型路径</th>
-            </tr>
-        </thead>
-    </table>
-    
-    <div id="toolbar">
-        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="javascript:$('#dg').edatagrid('addRow')">添加商品</a>
-        <!--  <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg').edatagrid('destroyRow')">删除用户</a> -->
-        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg').edatagrid('destroyRow')">删除商品</a>
-        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="javascript:$('#dg').edatagrid('saveRow')">保存</a>
-        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-undo" plain="true" onclick="javascript:$('#dg').edatagrid('cancelRow')">撤销</a>
-        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="javascript:$('#dg').edatagrid('reload')">刷新列表</a>
-    </div>
+<div >
+		增加新纪录请设置ID为0
+		    
+		    
+		    <div id="toolbar">
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="javascript:$('#dg').edatagrid('addRow')">添加订单</a>
+		        <!--   -->
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg').edatagrid('destroyRow')">删除订单</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="javascript:$('#dg').edatagrid('saveRow')">保存</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-undo" plain="true" onclick="javascript:$('#dg').edatagrid('cancelRow')">撤销</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="javascript:$('#dg').edatagrid('reload')">刷新列表</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="ShowDetileOnRight()">在右侧子表展开</a>
+		    </div>
+		     <div id="toolbar1">
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="javascript:$('#dg1').edatagrid('addRow')">添加商品</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg1').edatagrid('destroyRow')">删除商品</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="javascript:$('#dg1').edatagrid('saveRow')">保存</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-undo" plain="true" onclick="javascript:$('#dg1').edatagrid('cancelRow')">撤销</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="javascript:$('#dg1').edatagrid('reload')">刷新列表</a>
+		    </div>
+</div>
+<div>
+
+<table>
+<tr>
+<td><table  id="dg" title="订单" style="width:500px;height:420px" toolbar="#toolbar" pagination=""false"" idField="id" rownumbers="false" fitColumns="true" singleSelect="true">
+		            
+		        <thead>
+		            <tr>
+		            	<th field="ck" checkbox="true"></th>
+		            	<th field="orderID" width="50" editor="{type:'validatebox',options:{required:true}}">订单ID</th>
+		                <th field="userID" width="50" editor="{type:'validatebox',options:{required:true}}">用户ID</th>
+		                <th field="deliver_address" width="90" editor="{type:'validatebox',options:{required:true}}">送货地址编号</th>
+		                <th field="pay_method" width="150" editor="{type:'validatebox',options:{required:true}}">支付方式</th>
+		                <th field="total_price" width="50" editor="{type:'validatebox',options:{required:true}}">订单总价</th>
+		                <th field="invoiceID" width="50" editor="{type:'validatebox',options:{required:true}}">发票编号</th>
+		                <th field="remark" width="50" editor="{type:'validatebox',options:{required:true}}">备注</th>
+		                <th field="status" width="50" editor="{type:'validatebox',options:{required:true}}">订单状态</th>
+		            </tr>
+		        </thead>
+		    </table></td>
+<td><table  id="dg1" title="订单内商品" style="width:700px;height:420px" toolbar="#toolbar1" pagination="false" idField="id" rownumbers="false" fitColumns="true" singleSelect="true">
+		            
+		        <thead>
+		            <tr>
+		            	<th field="ck" checkbox="true"></th>
+		            	<th field="orderitemID" width="50" editor="{type:'validatebox',options:{required:true}}">ID</th>
+		                <th field="orderID" width="50" editor="{type:'validatebox',options:{required:true}}">所属订单</th>
+		                <th field="goodID" width="90" editor="{type:'validatebox',options:{required:true}}">品类ID</th>
+		                <th field="goodsQuantity" width="150" editor="{type:'numberbox',options:{precision:0}}">订购数量</th>
+		                <th field="detail" width="50" editor="{type:'validatebox',options:{required:true}}">规格</th>
+		                <th field="price" width="50" editor="{type:'validatebox',options:{required:true}}">单价</th>
+		                <th field="name" width="50" editor="{type:'validatebox',options:{required:true}}">商品名</th>
+		            </tr>
+		        </thead>
+		    </table></td>
+</tr>
+</table>
+		
+		    
+</div>
+<script>
+//获取orderID后加载对应Orderitem
+		 function ShowDetileOnRight(){
+				var row = $('#dg').datagrid('getSelected');
+				var id=row.id;
+		
+				$('#dg1').datagrid({   
+				    url:'/AdminWebshopping/getOrderItem?OrderID='+id 
+				});
+				$('#dg1').datagrid('reload');
+		
+		/*		
+				$.post("/AdminWebshopping/getOrderItem?OrderID='+id,function(data){
+					$('#dg1').datagrid('load',data);//刷新
+				//	alert(data);
+					});
+		*/
+}
+
+</script>
 </body>
 </html>

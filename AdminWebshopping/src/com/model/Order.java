@@ -11,6 +11,20 @@ public class Order {
 	private String time = null;
 	private String status = null;
 	private String remark = null;
+	private int id=0;
+	
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
 
 	public Order() {
 		super();

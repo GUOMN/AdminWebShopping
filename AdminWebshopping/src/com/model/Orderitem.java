@@ -6,21 +6,35 @@ public class Orderitem {
 	private int goodID;
 	private int goodsQuantity;
 	private String detail = null;
-	private String name = null;
 	private String image = null;
 	private double price = 0;
+	private String name;
+	private int id=0;
+	
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public Orderitem() {
 		super();
 	}
 
-	public Orderitem(int orderitemID, int goodID, int goodsQuantity,
-			String detail) {
+	public Orderitem(int orderitemID, int orderID, int goodID,
+			int goodsQuantity, String detail, double price) {
 		super();
+		this.orderitemID = orderitemID;
+		this.orderID = orderID;
 		this.goodID = goodID;
 		this.goodsQuantity = goodsQuantity;
 		this.detail = detail;
+		this.price = price;
 	}
+
 
 	public double getPrice() {
 		return price;

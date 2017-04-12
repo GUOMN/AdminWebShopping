@@ -78,4 +78,34 @@
   		<!-- 增加商品记录 -->
   	</servlet-mapping>
   	
+  	
+  	<servlet>
+		<servlet-name>Order</servlet-name>
+  		<servlet-class>com.servlet.OrderServelet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+  		<servlet-name>Order</servlet-name>
+  		<url-pattern>/updateOrder</url-pattern>
+  	</servlet-mapping>
+  	<servlet-mapping>
+  		<servlet-name>Order</servlet-name>
+  		<url-pattern>/ListOrder</url-pattern>
+  	</servlet-mapping>
+  	<servlet-mapping>
+  		<servlet-name>Order</servlet-name>
+  		<url-pattern>/deleteOrder</url-pattern>
+  	</servlet-mapping>
+  	<servlet-mapping>
+  		<servlet-name>Order</servlet-name>
+  		<url-pattern>/getOrderItem</url-pattern>
+  	</servlet-mapping>
+  	<servlet-mapping>
+  		<servlet-name>Order</servlet-name>
+  		<url-pattern>/deleteOrderItem</url-pattern>
+  	</servlet-mapping>
+  	<servlet-mapping>
+  		<servlet-name>Order</servlet-name>
+  		<url-pattern>/updateOrderItem</url-pattern>
+  	</servlet-mapping>
+  	
 </web-app>
