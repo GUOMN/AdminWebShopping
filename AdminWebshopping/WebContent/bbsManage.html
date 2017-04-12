@@ -13,43 +13,98 @@
 	<script>
 		 $(function(){
 	         $('#dg').edatagrid({
-	             url: '/AdminWebshopping/listGoods',
-	             saveUrl: '/AdminWebshopping/updateGoods',
-	             updateUrl: '/AdminWebshopping/updateGoods',
-	             destroyUrl: '/AdminWebshopping/deleteGoods'
+	             url: '/AdminWebshopping/list_topics',
+	             saveUrl: '',
+	             updateUrl: '',
+	             destroyUrl: '/AdminWebshopping/delete_topic'
+	         });
+	     });
+		 $(function(){
+	         $('#dg1').edatagrid({
+	             url: '',
+	             saveUrl: '',
+	             updateUrl: '',
+	             destroyUrl: '/AdminWebshopping/delete_reply'
 	         });
 	     });
 	</script>
 </head>
 <body>
-增加新纪录请设置ID为0
-    <table id="dg" title="订单管理" style="width:700px;height:420px"
-            toolbar="#toolbar" pagination="false" idField="id"
-            rownumbers="false" fitColumns="true" singleSelect="true">
-        <thead>
-            <tr>
-            	<th field="ck" checkbox="true"></th>
-            	<th field="goodID" width="50" editor="{type:'validatebox',options:{required:true}}">商品ID</th>
-                <th field="name" width="50" editor="{type:'validatebox',options:{required:true}}">商品名</th>
-                <th field="categoryID" width="90" editor="{type:'validatebox',options:{required:true}}">分类ID</th>
-                <th field="number" width="150" editor="{type:'numberbox',options:{precision:0}}">库存</th>
-                <th field="priceCommon" width="50" editor="{type:'validatebox',options:{required:true}}">价格</th>
-                <th field="introduct" width="50" editor="{type:'validatebox',options:{required:true}}">简介</th>
-                <th field="material" width="50" editor="{type:'validatebox',options:{required:true}}">材料</th>
-                <th field="color" width="50" editor="{type:'validatebox',options:{required:true}}">颜色</th>
-                <th field="image" width="50" editor="{type:'validatebox',options:{required:true}}">图片路径</th>
-                <th field="modelFilelocation" width="50" editor="{type:'validatebox',options:{required:true}}">模型路径</th>
-            </tr>
-        </thead>
-    </table>
-    
-    <div id="toolbar">
-        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="javascript:$('#dg').edatagrid('addRow')">添加商品</a>
-        <!--  <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg').edatagrid('destroyRow')">删除用户</a> -->
-        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg').edatagrid('destroyRow')">删除商品</a>
-        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="javascript:$('#dg').edatagrid('saveRow')">保存</a>
-        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-undo" plain="true" onclick="javascript:$('#dg').edatagrid('cancelRow')">撤销</a>
-        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="javascript:$('#dg').edatagrid('reload')">刷新列表</a>
-    </div>
+<div >        
+		    <div id="toolbar">
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg').edatagrid('destroyRow')">删除帖子</a>
+		        <!--  <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="javascript:$('#dg').edatagrid('saveRow')">保存</a>-->
+		        <!--<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-undo" plain="true" onclick="javascript:$('#dg').edatagrid('cancelRow')">撤销</a>-->
+		        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="javascript:$('#dg').edatagrid('reload')">刷新列表</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="ShowDetileOnRight()">查看跟帖</a>
+		    </div>
+		     <div id="toolbar1">
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg1').edatagrid('destroyRow')">删除评论</a>
+		        <!--  <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="javascript:$('#dg').edatagrid('saveRow')">保存</a>-->
+		        <!--<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-undo" plain="true" onclick="javascript:$('#dg').edatagrid('cancelRow')">撤销</a>-->
+		        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="javascript:$('#dg1').edatagrid('reload')">刷新列表</a>
+		    </div>
+</div>
+<div>
+
+<table>
+<tr>
+<td><table  id="dg" title="帖子管理" style="width:650px;height:420px" toolbar="#toolbar" pagination=""false"" idField="id" rownumbers="false" fitColumns="true" singleSelect="true">
+		            
+		        <thead>
+		            <tr>
+		            	<th field="ck" checkbox="true"></th>
+		            	<th field="topicID" width="20" editor="{type:'validatebox',options:{required:true}}">帖子ID</th>
+		                <th field="title" width="80" editor="{type:'validatebox',options:{required:true}}">帖子标题</th>
+		                <th field="sectionID" width="20" editor="{type:'validatebox',options:{required:true}}">版块编号</th>
+		                <th field="userID" width="20" editor="{type:'validatebox',options:{required:true}}">用户ID</th>
+		                <th field="user_nameString" width="30" editor="{type:'validatebox',options:{required:true}}">用户名</th>
+		                <th field="publishTimeDate" width="50" editor="{type:'validatebox',options:{required:true}}">发布时间</th>
+		                <th field="content" width="100" editor="{type:'validatebox',options:{required:true}}">正文</th>
+		                <th field="num_of_reply" width="20" editor="{type:'numberbox',options:{precision:0}}">跟帖数目</th>
+		                 <th field="view_count" width="20" editor="{type:'numberbox',options:{precision:0}}">点击量</th>
+		            </tr>
+		        </thead>
+		    </table></td>
+<td><table  id="dg1" title="选中帖子的评论" style="width:500px;height:420px" toolbar="#toolbar1" pagination="false" idField="id" rownumbers="false" fitColumns="true" singleSelect="true">
+		            
+		        <thead>
+		            <tr>
+		            	<th field="ck" checkbox="true"></th>
+		            	<th field="replyID" width="50" editor="{type:'validatebox',options:{required:true}}">ID</th>
+		                <th field="topicID" width="50" editor="{type:'validatebox',options:{required:true}}">所属帖子ID</th>
+		                <!-- <th field="title" width="90" editor="{type:'validatebox',options:{required:true}}">标题</th> -->
+		                <th field="content" width="150" editor="{type:'numberbox',options:{precision:0}}">内容</th>
+		                <th field="publishTimeDate" width="50" editor="{type:'validatebox',options:{required:true}}">发布时间</th>
+		                <th field="userID" width="50" editor="{type:'validatebox',options:{required:true}}">用户ID</th>
+		                <th field="user_nameString" width="50" editor="{type:'validatebox',options:{required:true}}">用户名</th>
+		            </tr>
+		        </thead>
+		    </table></td>
+</tr>
+</table>
+		
+		    
+</div>
+<script>
+//获取topic后加载其reply
+		 function ShowDetileOnRight(){
+				var row = $('#dg').datagrid('getSelected');
+				var id=row.id;
+		
+				$('#dg1').datagrid({   
+				    url:'/AdminWebshopping/list_replies?topicID='+id 
+				});
+				$('#dg1').datagrid('reload');
+		
+		/*		
+				$.post("/AdminWebshopping/getOrderItem?OrderID='+id,function(data){
+					$('#dg1').datagrid('load',data);//刷新
+				//	alert(data);
+					});
+		*/
+}
+
+</script>
 </body>
 </html>

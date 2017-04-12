@@ -13,8 +13,22 @@ public class BBSreply {
 	private String content = null;
 	private String user_nameString=null;
 	private String IconURL=null;
+	private int id=0;
 	
 	
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public void setModifyTime(String modifyTime) {
+		this.modifyTime = modifyTime;
+	}
+	public void setPublishTimeDate(String publishTimeDate) {
+		this.publishTimeDate = publishTimeDate;
+	}
 	@Override
 	public String toString() {
 		return "BBSreply [replyID=" + replyID + ", topicID=" + topicID

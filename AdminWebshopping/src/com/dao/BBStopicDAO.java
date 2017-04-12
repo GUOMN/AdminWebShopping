@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -57,7 +58,7 @@ public  class BBStopicDAO {
 			}
 			ResultSet rs = ps.executeQuery(); // 执行SQL语句，获得查询结果集
 			ArrayList<BBStopic> list = new ArrayList<BBStopic>();
-			while (rs.next() && rs.getRow() > 0) { // 遍历结果集
+			while (rs.next()) { // 遍历结果集
 				list.add(BBStopicDAO.queryTopicID(rs.getInt(1)));
 			}
 			rs.close();
@@ -72,88 +73,31 @@ public  class BBStopicDAO {
 		}
 	}
 	/**
-	 * 用户查看表计数器修改
-	 * 用户查看+1
+	 * 无参查询，列出所有帖子
+	 * @return
 	 */
-	public static boolean count_view(int topicID){
-		boolean success=false;
-		try {
-			Connection con = DAO.getCon();
-			String SQLstr = "UPDATE bbs_topic SET view_count = view_count+1 WHERE topicID = ?";
-			PreparedStatement pstm = con.prepareStatement(SQLstr);
-			pstm.setInt(1, topicID);
-
-
-			int flag = pstm.executeUpdate();
-			if (flag ==1) {
-				success=true;
-			}
-			pstm.close();
-			con.close();
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-		return success;
-	}
-	/**
-	 * 用户跟帖表计数器修改
-	 * 在dao层中调用
-	 * 用户跟帖+1
-	 */
-	public static boolean count_reply(int topicID){
-		boolean success=false;
-		try {
-			Connection con = DAO.getCon();
-			String SQLstr = "UPDATE bbs_topic SET num_of_reply = num_of_reply+1 WHERE topicID = ?";
-			PreparedStatement pstm = con.prepareStatement(SQLstr);
-			pstm.setInt(1, topicID);
-
-
-			int flag = pstm.executeUpdate();
-			if (flag ==1) {
-				success=true;
-			}
-			pstm.close();
-			con.close();
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-		return success;
-	}
-	
-	/**
-	 * 插入操作
-	 */
-	public static boolean insert(BBStopic m) {
-		boolean success=false;
+	public static List<BBStopic> list_topics() {
+		List<BBStopic> list=new ArrayList<BBStopic>();
 		try {
 			Connection con = DAO.getCon();
 			PreparedStatement pstm = con
-					.prepareStatement("insert into bbs_topic(title,userID,sectionID,modifyTime,publishTime,content,on_the_top) "
-							+ "values(?,?,?,localtime(),localtime(),?,?)");
-
-			pstm.setString(1, m.getTitle());
-			pstm.setInt(2, m.getUserID());
-			pstm.setInt(3, m.getSectionID());
-			pstm.setString(4, m.getContent());
-			pstm.setBoolean(5, m.isOn_the_top());
-
-
-			int flag = pstm.executeUpdate();
-			if (flag > 0) {
-				success=true;
-			}
+					.prepareStatement("SELECT topicID FROM bbs_topic");
+			ResultSet rs=pstm.executeQuery();
+			
+			while (rs.next()) {
+				list.add(BBStopicDAO.queryTopicID(rs.getInt("topicID")));
+				
+			} 
 			pstm.close();
 			con.close();
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
-		return success;
+		return list;
 
 	}
+	
 
 	/**
 	 * 根据topID查询行内容
@@ -178,14 +122,7 @@ public  class BBStopicDAO {
 				bs.setView_count(rs.getInt("view_count"));
 				bs.setNum_of_reply(rs.getInt("num_of_reply"));
 				bs.setUser_nameString(rs.getString("name"));
-				try {
-					UserDAO.readIcon(String.valueOf(bs.getUserID()));
-					bs.setIconURL("user_icon/real/"+bs.getUserID()+".jpg");
-				} catch (Exception e) {
-					// TODO: handle exception
-					System.out.println(bs.getUserID()+",此用户ID无法获取头像");
-				}
-			
+				bs.setId(bs.getTopicID());
 			}
 			pStatement.close();
 			rs.close();
@@ -207,7 +144,7 @@ public  class BBStopicDAO {
 	 * 采用数据库触发器，Java只删除主贴，评论自动删除
 	 * 自动判断当前用户是否为帖子发表者
 	 */
-	public static boolean delete_topic(int topicID,int userID){
+	public static boolean delete_topic(int topicID){
 		boolean success=false;
 		
 		try {
@@ -216,9 +153,8 @@ public  class BBStopicDAO {
 //					.prepareStatement("DELETE bbs_topic.*,bbs_reply.*  FROM bbs_topic JOIN bbs_reply " +
 //							"ON bbs_topic.`topicID` = bbs_reply.`topicID` WHERE (bbs_topic.`topicID`=? and bbs_topic.`userID`=?)");
 			PreparedStatement pstm = con
-					.prepareStatement("DELETE FROM bbs_topic WHERE (bbs_topic.`topicID`=? and bbs_topic.`userID`=?)");
+					.prepareStatement("DELETE FROM bbs_topic WHERE bbs_topic.`topicID`=?");
 			pstm.setInt(1, topicID);
-			pstm.setInt(2, userID);
 
 			int flag = pstm.executeUpdate();
 			if (flag > 0) {

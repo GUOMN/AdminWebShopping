@@ -7,6 +7,7 @@ public class BBStopic {
 	private int topicID=0;
 	private String title = null;
 	private int sectionID=0;
+	private String sectionName=null;
 	private int userID=0;
 	private boolean on_the_top = false;
 	private  String modifyTimeDate = null;
@@ -16,7 +17,28 @@ public class BBStopic {
 	private int num_of_reply=0;
 	private String user_nameString=null;
 	private String IconURL=null;
+	private int id=0;
 	
+	
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getSectionName() {
+		return sectionName;
+	}
+	public void setSectionName(String sectionName) {
+		this.sectionName = sectionName;
+	}
+	public void setModifyTimeDate(String modifyTimeDate) {
+		this.modifyTimeDate = modifyTimeDate;
+	}
+	public void setPublishTimeDate(String publishTimeDate) {
+		this.publishTimeDate = publishTimeDate;
+	}
 	public String getIconURL() {
 		return IconURL;
 	}

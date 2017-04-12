@@ -20,37 +20,6 @@ import com.mysql.jdbc.Util;
 public class BBSreplyDAO {
 
 
-	// 新增回复
-	public static boolean insert(BBSreply m) {
-		boolean issuccess=false;
-		try {
-			Connection con = DAO.getCon();
-			PreparedStatement pstm = con
-					.prepareStatement("insert into bbs_reply(topicID,userID,title,content,modifyTime,publishTime) "
-							+ "values(?,?,?,?,localtime(),localtime())");
-
-			pstm.setInt(1, m.getTopicID());
-			pstm.setInt(2, m.getUserID());
-			pstm.setString(3, "undefined");
-			pstm.setString(4, m.getContent());
-
-
-			int flag = pstm.executeUpdate();
-			if (flag > 0) {
-				
-				if( BBStopicDAO.count_reply( m.getTopicID())){//计数器+1
-					issuccess=true;
-				}
-			} 
-			pstm.close();
-			con.close();
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-		return issuccess;
-	}
-
 	/**
 	 * 通过topicID/title、userID/name、reply.title、时间段,获得当前ReplyID
 	 *  参数function_code用于指示parameter所代表的内容
@@ -127,15 +96,7 @@ public class BBSreplyDAO {
 				bs.setModifyTime((java.util.Date)rs.getDate("modifyTime"));
 				bs.setPublishTimeDate((java.util.Date)rs.getDate("publishTime"));
 				bs.setUser_nameString(rs.getString("name"));
-				try {
-					UserDAO.readIcon(String.valueOf(bs.getUserID()));
-					bs.setIconURL("user_icon/real/"+bs.getUserID()+".jpg");
-				} catch (Exception e) {
-					// TODO: handle exception
-				}
-//				if(UserDAO.readIcon(String.valueOf(bs.getUserID()))){
-//					
-//				}
+				bs.setId(bs.getReplyID());
 			}
 			pStatement.close();
 			rs.close();
@@ -154,7 +115,7 @@ public class BBSreplyDAO {
 	 * 删除指定reply
 	 * 自动判断当前用户是否为评论发表者
 	 */
-	public static boolean delete_reply(int replyID,int userID){
+	public static boolean delete_reply(int replyID){
 		boolean success=false;
 		
 		try {
@@ -163,9 +124,8 @@ public class BBSreplyDAO {
 //					.prepareStatement("DELETE bbs_topic.*,bbs_reply.*  FROM bbs_topic JOIN bbs_reply " +
 //							"ON bbs_topic.`topicID` = bbs_reply.`topicID` WHERE (bbs_topic.`topicID`=? and bbs_topic.`userID`=?)");
 			PreparedStatement pstm = con
-					.prepareStatement("DELETE FROM bbs_reply WHERE (bbs_reply.`replyID`=? and bbs_reply.`userID`=?)");
+					.prepareStatement("DELETE FROM bbs_reply WHERE bbs_reply.`replyID`=?");
 			pstm.setInt(1, replyID);
-			pstm.setInt(2, userID);
 
 			int flag = pstm.executeUpdate();
 			if (flag > 0) {

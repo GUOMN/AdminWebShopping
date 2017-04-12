@@ -108,4 +108,26 @@
   		<url-pattern>/updateOrderItem</url-pattern>
   	</servlet-mapping>
   	
+  	
+	 <servlet>
+		<servlet-name>BBS</servlet-name>
+		<servlet-class>com.servlet.BBSServlet</servlet-class>
+  	</servlet>
+	  	<servlet-mapping>
+	  		<servlet-name>BBS</servlet-name>
+	  		<url-pattern>/list_topics</url-pattern>
+	  	</servlet-mapping>
+	  	<servlet-mapping>
+	  		<servlet-name>BBS</servlet-name>
+	  		<url-pattern>/list_replies</url-pattern>
+	  	</servlet-mapping>
+	  	<servlet-mapping>
+	  		<servlet-name>BBS</servlet-name>
+	  		<url-pattern>/delete_topic</url-pattern>
+	  	</servlet-mapping>
+	  	<servlet-mapping>
+	  		<servlet-name>BBS</servlet-name>
+	  		<url-pattern>/delete_reply</url-pattern>
+	  	</servlet-mapping>
+  	
 </web-app>
